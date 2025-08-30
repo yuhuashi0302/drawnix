@@ -1,0 +1,39 @@
+name: Build Drawnix IPA
+
+on:
+  workflow_dispatch:   # 手动触发按钮
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build IPA
+        run: |
+          xcodebuild -workspace Drawnix.xcworkspace \
+            -scheme Drawnix \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            -allowProvisioningUpdates \
+            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGN_IDENTITY="Apple Development" \
+            DEVELOPMENT_TEAM=""
+          mkdir Payload
+          cp -r build/Build/Products/Release-iphoneos/Drawnix.app Payload
+          zip -r Drawnix.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Drawnix-IPA
+          path: Drawnix.ipa
