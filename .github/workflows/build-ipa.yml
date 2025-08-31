@@ -7,28 +7,25 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest   # GitHub 提供的 macOS 运行器
+    runs-on: macos-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: List schemes
         run: |
           cd ios/App
           xcodebuild -workspace App.xcworkspace -list
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Install & Build Web
         run: |
           npm ci
-          npm run build || true   # 如果项目没有 build 脚本就跳过
+          npm run build || true
 
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+      - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
@@ -37,7 +34,7 @@ jobs:
           cd ios/App
           pod install
 
-      - name: Build IPA
+      - name: Build unsigned IPA
         run: |
           set -e
           cd ios/App
@@ -46,15 +43,12 @@ jobs:
             -configuration Release \
             -sdk iphoneos \
             -derivedDataPath build \
-            -allowProvisioningUpdates \
-            CODE_SIGN_STYLE=Automatic \
-            CODE_SIGN_IDENTITY="Apple Development"
+            CODE_SIGNING_ALLOWED=NO
           mkdir -p Payload
           cp -r build/Build/Products/Release-iphoneos/App.app Payload
-          zip -r ../../Drawnix.ipa Payload
+          zip -r ../../Drawnix-unsigned.ipa Payload
 
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: Drawnix-IPA
-          path: Drawnix.ipa
+          path: Drawnix-unsigned.ipa
