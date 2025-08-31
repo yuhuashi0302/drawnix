@@ -32,8 +32,8 @@ jobs:
 
      - name: Install CocoaPods deps
         run: |
-             cd ios/App
-             pod install      
+          cd ios/App
+          pod install      
 
       - name: Build IPA
         run: |
