@@ -34,7 +34,7 @@ jobs:
         run: |
           cd ios/App
           xcodebuild -workspace App.xcworkspace \
-            -scheme App \
+            -scheme DrawNix \
             -configuration Release \
             -sdk iphoneos \
             -derivedDataPath build \
