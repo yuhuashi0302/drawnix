@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
              
-     - name: List schemes
-       run: |
-         cd ios/App
-         xcodebuild -workspace App.xcworkspace -list  
+      - name: List schemes
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -list  
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
