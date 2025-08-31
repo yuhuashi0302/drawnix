@@ -6,15 +6,17 @@ on:
     branches: [develop]
 
 jobs:
-    build:
-    runs-on: macos-latest   # GitHub 提供云端 macOS 环境
+  build:
+    runs-on: macos-latest   # GitHub 提供的 macOS 运行器
     steps:
-      - uses: actions/checkout@v4
-             
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: List schemes
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -list  
+          xcodebuild -workspace App.xcworkspace -list
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -23,20 +25,21 @@ jobs:
       - name: Install & Build Web
         run: |
           npm ci
-          npm run build || true   # 没 build 脚本就跳过
+          npm run build || true   # 如果项目没有 build 脚本就跳过
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
-     - name: Install CocoaPods deps
+      - name: Install CocoaPods deps
         run: |
           cd ios/App
-          pod install      
+          pod install
 
       - name: Build IPA
         run: |
+          set -e
           cd ios/App
           xcodebuild -workspace App.xcworkspace \
             -scheme App \
@@ -46,7 +49,7 @@ jobs:
             -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Automatic \
             CODE_SIGN_IDENTITY="Apple Development"
-          mkdir Payload
+          mkdir -p Payload
           cp -r build/Build/Products/Release-iphoneos/App.app Payload
           zip -r ../../Drawnix.ipa Payload
 
