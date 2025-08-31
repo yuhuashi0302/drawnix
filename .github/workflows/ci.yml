@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -34,6 +35,11 @@ jobs:
       # 安装 Playwright 浏览器和依赖
       - name: Install Playwright
         run: npx playwright install --with-deps
+           # 1. 打印 scheme 列表
+      - name: List schemes
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -list
 
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       # - run: npx nx-cloud record -- echo Hello World
