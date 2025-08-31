@@ -6,9 +6,9 @@ on:
     branches: [develop]
 
 jobs:
-   build:
-   runs-on: macos-latest   # GitHub 提供云端 macOS 环境
-   steps:
+    build:
+    runs-on: macos-latest   # GitHub 提供云端 macOS 环境
+    steps:
       - uses: actions/checkout@v4
              
       - name: List schemes
