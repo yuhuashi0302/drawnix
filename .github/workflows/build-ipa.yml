@@ -10,7 +10,11 @@ jobs:
     runs-on: macos-latest   # GitHub 提供云端 macOS 环境
     steps:
       - uses: actions/checkout@v4
-
+             
+     - name: List schemes
+       run: |
+         cd ios/App
+         xcodebuild -workspace App.xcworkspace -list  
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -25,7 +29,6 @@ jobs:
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
-
 
       - name: Build IPA
         run: |
